@@ -2,17 +2,17 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>四川去哪儿大转盘 · 高级出行面板</title>
+  <title>四川去哪儿大转盘</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 高德安全密钥 -->
+ 
   <script>
     window._AMapSecurityConfig = {
       securityJsCode: '4ab9f87a7b60637c962bb1c17645ec18'
     };
   </script>
 
-  <!-- JSAPI Key + 插件：自动完成、地点搜索、公交、定位、行政区查询 -->
+  
   <script type="text/javascript"
     src="https://webapi.amap.com/maps?v=2.0&key=c328a33cebce0cb2138acaee66bdc61c&plugin=AMap.AutoComplete,AMap.PlaceSearch,AMap.Transfer,AMap.Geolocation,AMap.DistrictSearch">
   </script>
@@ -51,7 +51,7 @@
       flex-direction: column;
     }
 
-    /* 顶部标题条：半透明玻璃风 */
+  
     .app-header {
       padding: 8px 16px 4px;
       display: flex;
@@ -94,7 +94,7 @@
       letter-spacing: 0.06em;
     }
 
-    /* 主布局：三列仪表盘 */
+   
     .layout {
       flex: 1;
       display: flex;
@@ -114,7 +114,7 @@
       min-width: 0;
     }
 
-    /* 比例：左稍小，中间最大，右固定宽度 */
+  
     .left-panel { flex: 0.5; align-items: center; justify-content: center; }
     .center-panel { flex: 1.5; gap: 10px; }
     .right-panel {
@@ -123,7 +123,7 @@
       max-width: 380px;
     }
 
-    /* 卡片：高级深色 + 内发光边界 */
+    
     .card {
       background: radial-gradient(circle at top left, #020617, #020617);
       border-radius: 18px;
@@ -188,7 +188,7 @@
       background: rgba(15, 23, 42, 0.8);
     }
 
-    /* 转盘装饰框：加标题和统计条 */
+   
     .wheel-card-header {
       width: 100%;
       max-width: 320px;
@@ -214,7 +214,7 @@
       box-shadow: 0 0 12px rgba(248, 113, 22, 0.9);
     }
 
-    /* 转盘本体：橙色系分段 + 光晕 */
+   
     .wheel-container {
       position: relative;
       width: 320px;
@@ -350,7 +350,7 @@
       color: var(--text-sub);
     }
 
-    /* 中部地图 */
+   
     #map-container {
       width: 100%;
       flex: 1;
@@ -359,7 +359,7 @@
       border: 1px solid rgba(148, 163, 184, 0.4);
     }
 
-    /* 攻略卡片 */
+  
     .guide-header-line {
       display: flex;
       justify-content: space-between;
@@ -409,7 +409,6 @@
       color: var(--text-sub);
     }
 
-    /* 右侧出行表单 + 公交方案 */
     .route-form {
       display: flex;
       flex-direction: column;
@@ -495,9 +494,7 @@
 
 
 
-    /* 对高德默认 panel 的一点皮肤（Transfer 会往里面插 DOM） */
-  /* 公共交通方案面板：提高对比度和可读性 */
-/* 公共交通方案面板：整体高对比白字 */
+  
 #transfer-panel {
   border-radius: 12px;
   border: 1px solid rgba(248, 250, 252, 0.35);
@@ -506,18 +503,18 @@
     rgba(15, 23, 42, 0.99),
     rgba(15, 23, 42, 0.96)
   );
-  color: #f9fafb;              /* 全局主文字白色 */
-  font-size: 14px;             /* 整体字号略放大 */
+  color: #f9fafb;            
+  font-size: 14px;           
 }
 
-/* 高德公交容器基准样式 */
+
 #transfer-panel .amap-lib-transfer {
   color: #f9fafb;
   font-size: 14px;
   line-height: 1.7;
 }
 
-/* 每一条方案卡片 */
+
 #transfer-panel .amap-lib-transfer .plan {
   border-color: rgba(148, 163, 184, 0.9);
   background: rgba(15, 23, 42, 0.98);
@@ -526,14 +523,14 @@
   border-radius: 12px;
 }
 
-/* Hover 高亮整条方案 */
+
 #transfer-panel .amap-lib-transfer .plan:hover {
   border-color: rgba(248, 113, 22, 0.95);
   background: rgba(15, 23, 42, 1);
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.95);
 }
 
-/* 方案标题行：总时间 / 换乘信息 */
+
 #transfer-panel .amap-lib-transfer .title {
   color: #ffffff;
   font-weight: 700;
@@ -541,33 +538,33 @@
   margin-bottom: 4px;
 }
 
-/* 线路步骤和站名：主文字色 */
+
 #transfer-panel .amap-lib-transfer li,
 #transfer-panel .amap-lib-transfer .segment-list {
   color: #f3f4f6;
   font-size: 13px;
 }
 
-/* 链接（线路号、站名）统一主色，保持醒目 */
+
 #transfer-panel a {
   color: #fb923c;
   font-weight: 600;
 }
 
-/* 较次要的小说明，仍然要可读，不用太暗 */
+
 #transfer-panel .amap-lib-transfer .plan .info,
 #transfer-panel .amap-lib-transfer .tip {
   font-size: 12px;
   color: #e5e7eb;
 }
 
-/* 彻底去掉公共交通方案中的白底，强制深色背景 */
+
 #transfer-panel,
 #transfer-panel * {
   background-color: transparent !important;
 }
 
-/* 再给主要容器和每条方案卡片单独设深色背景 */
+/
 #transfer-panel {
   border-radius: 12px;
   border: 1px solid rgba(248, 250, 252, 0.35);
@@ -594,7 +591,7 @@
   background: rgba(15, 23, 42, 1) !important;
 }
 
-/* 去掉可能残留的白色块，例如列表、标题栏等 */
+
 #transfer-panel .amap-lib-transfer .plan *,
 #transfer-panel .amap-lib-transfer .segment-list,
 #transfer-panel .amap-lib-transfer .plan .info {
@@ -613,7 +610,7 @@
   </header>
 
   <div class="layout">
-    <!-- 左：转盘 -->
+    
     <div class="left-panel">
       <div class="card" style="align-items:center;">
         <div class="wheel-card-header">
@@ -678,7 +675,7 @@
       </div>
     </div>
 
-    <!-- 右：公共交通出行 -->
+    
     <div class="right-panel">
       <div class="card right-form-card">
         <div class="panel-title-row">
@@ -766,13 +763,13 @@
     let destMarker;
     let lastDestination = "";
 
-    let originLngLat = null;   // 自动完成选中的精确起点
-    let currentLngLat = null;  // 浏览器定位的当前位置
+    let originLngLat = null;   
+    let currentLngLat = null;  
     let districtSearch;
     let districtPolygon;
 
     function generateColors(n) {
-      // 橙色系分段：在 20~40 度色相范围内均匀分布
+      
       const colors = [];
       const baseHue = 20;
       const hueRange = 20;
@@ -811,7 +808,7 @@
       map = new AMap.Map("map-container", {
         zoom: 7,
         center: [104.0668, 30.5728],
-        mapStyle: "amap://styles/dark"  // 暂用官方暗色样式，可换成你自己的样式ID [web:304]
+        mapStyle: "amap://styles/dark"  
       });
 
       placeSearch = new AMap.PlaceSearch({
@@ -1068,3 +1065,4 @@
   </script>
 </body>
 </html>
+
