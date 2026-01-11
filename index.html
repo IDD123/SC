@@ -12,7 +12,7 @@
     };
   </script>
 
-  <!-- JSAPI Key + 插件：自动完成、地点搜索、公交、定位、行政区查询 -->
+  <!-- JSAPI Key + 插件 -->
   <script type="text/javascript"
     src="https://webapi.amap.com/maps?v=2.0&key=c328a33cebce0cb2138acaee66bdc61c&plugin=AMap.AutoComplete,AMap.PlaceSearch,AMap.Transfer,AMap.Geolocation,AMap.DistrictSearch">
   </script>
@@ -32,640 +32,217 @@
       --danger: #f97373;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
-        "Microsoft YaHei", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
       background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #020617 100%);
       color: var(--text-main);
       display: flex;
       flex-direction: column;
     }
 
-    /* 顶部标题条：半透明玻璃风 */
+    /* 顶部标题条 */
     .app-header {
       padding: 8px 16px 4px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       backdrop-filter: blur(16px);
-      background: linear-gradient(
-        to bottom,
-        rgba(15, 23, 42, 0.85),
-        rgba(15, 23, 42, 0.2)
-      );
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.2));
       border-bottom: 1px solid rgba(148, 163, 184, 0.25);
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
       z-index: 10;
     }
-    .app-title {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .app-title h1 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #f9fafb;
-    }
-    .app-title span {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
+    .app-title { display: flex; flex-direction: column; gap: 2px; }
+    .app-title h1 { margin: 0; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: #f9fafb; }
+    .app-title span { font-size: 12px; color: var(--text-sub); }
     .app-badge {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
+      font-size: 11px; padding: 4px 10px; border-radius: 999px;
       background: radial-gradient(circle at 0 0, #f97316, #ea580c);
-      color: #fff;
-      box-shadow: 0 0 16px rgba(248, 113, 22, 0.7);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      color: #fff; box-shadow: 0 0 16px rgba(248, 113, 22, 0.7);
+      text-transform: uppercase; letter-spacing: 0.06em;
     }
 
-    /* 主布局：三列仪表盘（PC 默认） */
+    /* 主布局 */
     .layout {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-      height: calc(100vh - 52px);
-      padding: 10px 14px 14px;
-      gap: 12px;
+      flex: 1; display: flex; flex-direction: row;
+      width: 100%; height: calc(100vh - 52px);
+      padding: 10px 14px 14px; gap: 12px;
     }
 
-    .left-panel,
-    .center-panel,
-    .right-panel {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-width: 0;
+    .left-panel, .center-panel, .right-panel {
+      display: flex; flex-direction: column; height: 100%; min-width: 0;
     }
-
-    /* 比例：左稍小，中间最大，右固定宽度（PC） */
     .left-panel { flex: 0.5; align-items: center; justify-content: center; }
     .center-panel { flex: 1.5; gap: 10px; }
-    .right-panel {
-      flex: 1;
-      gap: 10px;
-      max-width: 380px;
-    }
+    .right-panel { flex: 1; gap: 10px; max-width: 380px; }
 
-    /* 卡片：高级深色 + 内发光边界 */
+    /* 卡片通用 */
     .card {
       background: radial-gradient(circle at top left, #020617, #020617);
-      border-radius: 18px;
-      padding: 10px 12px 10px;
+      border-radius: 18px; padding: 10px 12px 10px;
       border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow:
-        0 18px 45px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(15, 23, 42, 0.9);
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(15, 23, 42, 0.9);
+      display: flex; flex-direction: column; min-height: 0;
+      position: relative; overflow: hidden;
     }
-
     .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
+      content: ""; position: absolute; inset: 0; border-radius: inherit;
       background: radial-gradient(circle at top right, rgba(248, 113, 22, 0.06), transparent 60%);
       pointer-events: none;
     }
+    .card > * { position: relative; z-index: 1; }
 
-    .card > * {
-      position: relative;
-      z-index: 1;
-    }
+    .center-map-card, .right-transfer-card { flex: 1; }
+    .center-guide-card, .right-form-card { flex: 0 0 auto; }
 
-    .center-map-card,
-    .right-transfer-card {
-      flex: 1;
-    }
-    .center-guide-card,
-    .right-form-card {
-      flex: 0 0 auto;
-    }
-
-    .panel-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .panel-title {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #f9fafb;
-    }
-
+    .panel-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .panel-title { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #f9fafb; }
     .panel-tag {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-sub);
-      border-radius: 999px;
-      padding: 2px 8px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.8);
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-sub);
+      border-radius: 999px; padding: 2px 8px; border: 1px solid rgba(148, 163, 184, 0.4); background: rgba(15, 23, 42, 0.8);
     }
 
-    /* 转盘装饰框：加标题和统计条 */
+    /* 转盘 */
     .wheel-card-header {
-      width: 100%;
-      max-width: 320px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--text-sub);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      width: 100%; max-width: 320px; margin-bottom: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--text-sub); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
     }
-    .wheel-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .wheel-meta { display: flex; align-items: center; gap: 6px; }
     .wheel-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
+      width: 7px; height: 7px; border-radius: 999px;
       background: radial-gradient(circle at 1px 1px, #f97316, #ea580c);
       box-shadow: 0 0 12px rgba(248, 113, 22, 0.9);
     }
-
-    /* 转盘本体：橙色系分段 + 光晕 */
     .wheel-container {
-      position: relative;
-      width: 320px;
-      height: 320px;
-      margin-bottom: 14px;
-      border-radius: 50%;
-      padding: 10px;
+      position: relative; width: 320px; height: 320px; margin-bottom: 14px;
+      border-radius: 50%; padding: 10px;
       background: radial-gradient(circle at 30% 0, rgba(248, 250, 252, 0.12), transparent 50%);
-      box-shadow:
-        0 0 40px rgba(248, 113, 22, 0.35),
-        0 24px 55px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 40px rgba(248, 113, 22, 0.35), 0 24px 55px rgba(0, 0, 0, 0.9);
     }
     #wheel {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 5px solid rgba(15, 23, 42, 0.9);
-      box-sizing: border-box;
-      position: relative;
-      overflow: hidden;
+      width: 100%; height: 100%; border-radius: 50%;
+      border: 5px solid rgba(15, 23, 42, 0.9); box-sizing: border-box;
+      position: relative; overflow: hidden;
       background: radial-gradient(circle at center, #020617 0, #020617 45%, #0b1120 80%, #020617 100%);
     }
-    #wheel-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      transition: transform 4s cubic-bezier(0.22, 0.12, 0.05, 1);
-      will-change: transform;
-    }
+    #wheel-inner { width: 100%; height: 100%; border-radius: 50%; transition: transform 4s cubic-bezier(0.22, 0.12, 0.05, 1); will-change: transform; }
     .pointer {
-      position: absolute;
-      top: -2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-bottom: 24px solid #f9fafb;
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8));
-      z-index: 10;
+      position: absolute; top: -2px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-bottom: 24px solid #f9fafb;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8)); z-index: 10;
     }
     .pointer::after {
-      content: "";
-      position: absolute;
-      left: -7px;
-      top: 4px;
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 1px 1px, #f97316, #ea580c);
+      content: ""; position: absolute; left: -7px; top: 4px; width: 14px; height: 14px;
+      border-radius: 999px; background: radial-gradient(circle at 1px 1px, #f97316, #ea580c);
       box-shadow: 0 0 12px rgba(248, 113, 22, 0.9);
     }
-
     #center-text {
-      position: absolute;
-      width: 86px;
-      height: 86px;
+      position: absolute; width: 86px; height: 86px;
       background: radial-gradient(circle at top, #0b1120, #020617);
-      border-radius: 50%;
-      border: 2px solid rgba(148, 163, 184, 0.7);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-sub);
-      box-shadow:
-        0 0 18px rgba(15, 23, 42, 0.9),
-        0 0 30px rgba(0, 0, 0, 0.95);
-      z-index: 5;
-      cursor: pointer;
-      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+      border-radius: 50%; border: 2px solid rgba(148, 163, 184, 0.7);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; font-size: 12px; color: var(--text-sub);
+      box-shadow: 0 0 18px rgba(15, 23, 42, 0.9), 0 0 30px rgba(0, 0, 0, 0.95);
+      z-index: 5; cursor: pointer; transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
     }
-    #center-text span {
-      display: block;
-      line-height: 1.3;
-    }
-    #center-text strong {
-      color: #f9fafb;
-      font-size: 13px;
-    }
+    #center-text strong { color: #f9fafb; font-size: 13px; }
     #center-text:hover {
       transform: translate(-50%, -50%) scale(1.03);
-      box-shadow:
-        0 0 22px rgba(248, 113, 22, 0.5),
-        0 0 40px rgba(15, 23, 42, 1);
+      box-shadow: 0 0 22px rgba(248, 113, 22, 0.5), 0 0 40px rgba(15, 23, 42, 1);
     }
-
     #spin-btn {
-      padding: 9px 26px;
-      font-size: 13px;
-      border: none;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #f97316, #ea580c);
-      color: #0b1120;
-      cursor: pointer;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      box-shadow:
-        0 12px 30px rgba(248, 113, 22, 0.6),
-        0 0 0 1px rgba(15, 23, 42, 0.9);
-      margin-bottom: 6px;
-      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+      padding: 9px 26px; font-size: 13px; border: none; border-radius: 999px;
+      background: linear-gradient(135deg, #f97316, #ea580c); color: #0b1120;
+      cursor: pointer; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      box-shadow: 0 12px 30px rgba(248, 113, 22, 0.6), 0 0 0 1px rgba(15, 23, 42, 0.9);
+      margin-bottom: 6px; transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
     }
-    #spin-btn:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 18px 40px rgba(248, 113, 22, 0.7),
-        0 0 0 1px rgba(15, 23, 42, 0.9);
-    }
-    #spin-btn:active {
-      transform: translateY(1px) scale(0.99);
-      box-shadow:
-        0 8px 20px rgba(248, 113, 22, 0.45),
-        0 0 0 1px rgba(15, 23, 42, 1);
-    }
-    #spin-btn:disabled {
-      background: linear-gradient(135deg, #4b5563, #374151);
-      box-shadow: none;
-      cursor: not-allowed;
-    }
+    #spin-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 40px rgba(248, 113, 22, 0.7), 0 0 0 1px rgba(15, 23, 42, 0.9); }
+    #spin-btn:active { transform: translateY(1px) scale(0.99); box-shadow: 0 8px 20px rgba(248, 113, 22, 0.45), 0 0 0 1px rgba(15, 23, 42, 1); }
+    #spin-btn:disabled { background: linear-gradient(135deg, #4b5563, #374151); box-shadow: none; cursor: not-allowed; }
+    #result { font-size: 13px; text-align: center; min-height: 18px; color: var(--text-sub); }
 
-    #result {
-      font-size: 13px;
-      text-align: center;
-      min-height: 18px;
-      color: var(--text-sub);
-    }
+    /* 地图 */
+    #map-container { background-color: #1b1f2b; width: 100%; flex: 1; border-radius: 14px; overflow: hidden; border: 1px solid rgba(148, 163, 184, 0.4); }
 
-    /* 中部地图 */
-    #map-container {
-      width: 100%;
-      flex: 1;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    /* 攻略卡片 */
-    .guide-header-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      font-size: 11px;
-      color: var(--text-sub);
-    }
-    .guide-destination {
-      font-size: 13px;
-      color: var(--text-main);
-    }
-    .guide-row {
-      display: flex;
-      flex-direction: row;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    /* 攻略 */
+    .guide-header-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 11px; color: var(--text-sub); }
+    .guide-destination { font-size: 13px; color: var(--text-main); }
+    .guide-row { display: flex; flex-direction: row; gap: 8px; flex-wrap: wrap; }
     .guide-card {
-      flex: 1;
-      min-width: 150px;
-      background: radial-gradient(circle at top left, #020617, #020617);
-      border-radius: 12px;
-      padding: 8px 10px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      flex: 1; min-width: 150px; background: radial-gradient(circle at top left, #020617, #020617);
+      border-radius: 12px; padding: 8px 10px; border: 1px solid rgba(148, 163, 184, 0.4);
+      text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: center;
       transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease, background 0.15s ease;
     }
     .guide-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
-      border-color: rgba(248, 113, 22, 0.7);
-      background: radial-gradient(circle at top left, rgba(248, 113, 22, 0.16), #020617);
+      transform: translateY(-1px); box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+      border-color: rgba(248, 113, 22, 0.7); background: radial-gradient(circle at top left, rgba(248, 113, 22, 0.16), #020617);
     }
-    .guide-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: #f9fafb;
-      margin-bottom: 4px;
-    }
-    .guide-desc {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
+    .guide-title { font-size: 13px; font-weight: 500; color: #f9fafb; margin-bottom: 4px; }
+    .guide-desc { font-size: 12px; color: var(--text-sub); }
 
-    /* 右侧出行表单 + 公交方案 */
-    .route-form {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 12px;
-    }
-    .route-form label {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      color: var(--text-sub);
-    }
+    /* 表单 */
+    .route-form { display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+    .route-form label { display: flex; flex-direction: column; gap: 4px; color: var(--text-sub); }
     .route-form input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 5px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      background: rgba(15, 23, 42, 0.85);
-      color: var(--text-main);
-      font-size: 12px;
-      outline: none;
+      width: 100%; padding: 5px 8px; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.85); color: var(--text-main); font-size: 12px; outline: none;
       transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
     }
-    .route-form input::placeholder {
-      color: var(--text-muted);
-    }
-    .route-form input:focus {
-      border-color: var(--accent-strong);
-      background: #020617;
-      box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.5);
-    }
-
-    .route-destination {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .route-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
+    .route-form input:focus { border-color: var(--accent-strong); background: #020617; box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.5); }
+    .route-destination { font-size: 12px; color: var(--text-sub); }
+    .route-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .route-btn {
-      padding: 7px 14px;
-      font-size: 11px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      color: #020617;
-      white-space: nowrap;
-      background: linear-gradient(135deg, #22c55e, #15803d);
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      box-shadow:
-        0 12px 30px rgba(22, 163, 74, 0.55),
-        0 0 0 1px rgba(15, 23, 42, 0.9);
+      padding: 7px 14px; font-size: 11px; border-radius: 999px; border: none; cursor: pointer; color: #020617;
+      white-space: nowrap; background: linear-gradient(135deg, #22c55e, #15803d); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      box-shadow: 0 12px 30px rgba(22, 163, 74, 0.55), 0 0 0 1px rgba(15, 23, 42, 0.9);
       transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
     }
-    .route-btn:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 16px 36px rgba(22, 163, 74, 0.7),
-        0 0 0 1px rgba(15, 23, 42, 1);
-    }
-    .route-btn:active {
-      transform: translateY(1px) scale(0.99);
-      box-shadow:
-        0 8px 20px rgba(22, 163, 74, 0.45),
-        0 0 0 1px rgba(15, 23, 42, 1);
-    }
+    .route-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 36px rgba(22, 163, 74, 0.7), 0 0 0 1px rgba(15, 23, 42, 1); }
+    .route-panel { margin-top: 4px; padding: 6px 4px; font-size: 13px; line-height: 1.6; overflow-y: auto; flex: 1; }
 
-    .route-panel {
-      margin-top: 4px;
-      padding: 6px 4px;
-      font-size: 13px;
-      line-height: 1.6;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    /* 公共交通方案面板：整体高对比白字 */
+    /* 高德公交面板皮肤 */
     #transfer-panel {
-      border-radius: 12px;
-      border: 1px solid rgba(248, 250, 252, 0.35);
-      background: linear-gradient(
-        to bottom,
-        rgba(15, 23, 42, 0.99),
-        rgba(15, 23, 42, 0.96)
-      );
-      color: #f9fafb;
-      font-size: 14px;
+      border-radius: 12px; border: 1px solid rgba(248, 250, 252, 0.35);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.99), rgba(15, 23, 42, 0.96)) !important;
+      color: #f9fafb; font-size: 14px;
     }
-
-    #transfer-panel .amap-lib-transfer {
-      color: #f9fafb;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
+    #transfer-panel .amap-lib-transfer { background: transparent !important; color: #f9fafb; font-size: 14px; line-height: 1.7; }
     #transfer-panel .amap-lib-transfer .plan {
-      border-color: rgba(148, 163, 184, 0.9);
-      background: rgba(15, 23, 42, 0.98);
-      margin: 8px 8px 10px;
-      padding: 8px 10px;
-      border-radius: 12px;
+      border-color: rgba(148, 163, 184, 0.9) !important; background: rgba(15, 23, 42, 0.98) !important;
+      margin: 8px 8px 10px; padding: 8px 10px; border-radius: 12px;
     }
-
     #transfer-panel .amap-lib-transfer .plan:hover {
-      border-color: rgba(248, 113, 22, 0.95);
-      background: rgba(15, 23, 42, 1);
+      border-color: rgba(248, 113, 22, 0.95); background: rgba(15, 23, 42, 1) !important;
       box-shadow: 0 14px 30px rgba(15, 23, 42, 0.95);
     }
+    #transfer-panel .amap-lib-transfer .title { color: #ffffff; font-weight: 700; font-size: 14px; }
+    #transfer-panel .amap-lib-transfer li, #transfer-panel .amap-lib-transfer .segment-list { color: #f3f4f6; }
+    #transfer-panel a { color: #fb923c; font-weight: 600; }
+    #transfer-panel .amap-lib-transfer .plan .info, #transfer-panel .amap-lib-transfer .tip { font-size: 12px; color: #e5e7eb; }
+    #transfer-panel *, #transfer-panel .amap-lib-transfer .plan * { background-color: transparent !important; }
 
-    #transfer-panel .amap-lib-transfer .title {
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
-
-    #transfer-panel .amap-lib-transfer li,
-    #transfer-panel .amap-lib-transfer .segment-list {
-      color: #f3f4f6;
-      font-size: 13px;
-    }
-
-    #transfer-panel a {
-      color: #fb923c;
-      font-weight: 600;
-    }
-
-    #transfer-panel .amap-lib-transfer .plan .info,
-    #transfer-panel .amap-lib-transfer .tip {
-      font-size: 12px;
-      color: #e5e7eb;
-    }
-
-    #transfer-panel,
-    #transfer-panel * {
-      background-color: transparent !important;
-    }
-
-    #transfer-panel {
-      border-radius: 12px;
-      border: 1px solid rgba(248, 250, 252, 0.35);
-      background: linear-gradient(
-        to bottom,
-        rgba(15, 23, 42, 0.99),
-        rgba(15, 23, 42, 0.96)
-      ) !important;
-      color: #f9fafb;
-      font-size: 14px;
-    }
-
-    #transfer-panel .amap-lib-transfer {
-      background: transparent !important;
-      color: #f9fafb;
-    }
-
-    #transfer-panel .amap-lib-transfer .plan {
-      background: rgba(15, 23, 42, 0.98) !important;
-      border-color: rgba(148, 163, 184, 0.9) !important;
-    }
-
-    #transfer-panel .amap-lib-transfer .plan:hover {
-      background: rgba(15, 23, 42, 1) !important;
-    }
-
-    #transfer-panel .amap-lib-transfer .plan *,
-    #transfer-panel .amap-lib-transfer .segment-list,
-    #transfer-panel .amap-lib-transfer .plan .info {
-      background-color: transparent !important;
-    }
-
-    .note {
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    /* ========== 手机端适配：关键部分 ========== */
-    @media (max-width: 768px) {
+    /* ===== Mobile only (手机端适配) ===== */
+    @media (max-width: 900px) {
       .layout {
         flex-direction: column;
         height: auto;
-        padding: 8px;
+        min-height: calc(100vh - 52px);
+        padding: 10px 10px 14px;
       }
-
-      .left-panel,
-      .center-panel,
-      .right-panel {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
+      .left-panel, .center-panel, .right-panel {
+        flex: none; width: 100%; max-width: none;
       }
-
-      .left-panel {
-        align-items: center;
-        justify-content: flex-start;
-      }
-
-      .card {
-        margin-bottom: 10px;
-      }
-
-      /* 转盘在手机上自适应宽度 */
+      .center-panel { /* order removed to keep natural DOM order (Wheel->Map->Transport) */ }
       .wheel-container {
-        width: 100%;
-        max-width: 280px;
-        height: auto;
-        aspect-ratio: 1 / 1;
+        width: min(320px, 86vw); height: min(320px, 86vw); margin: 0 auto 14px;
       }
-
-      #wheel {
-        width: 100%;
-        height: 100%;
-      }
-
-      .panel-title {
-        font-size: 12px;
-      }
-
-      .app-header {
-        padding: 8px 10px;
-      }
-
-      .app-title h1 {
-        font-size: 16px;
-      }
-
-      .app-title span {
-        font-size: 11px;
-      }
-
-      .app-badge {
-        font-size: 10px;
-        padding: 3px 8px;
-      }
-
-      /* 地图高度在手机上设定一个较合适的固定值 */
-      #map-container {
-        height: 260px;
-      }
-
-      /* 右侧面板不再限制 max-width */
-      .right-panel {
-        max-width: 100%;
-      }
-
-      .route-panel {
-        max-height: 260px;
-      }
+      .center-map-card, #map-container { min-height: 45vh; }
     }
   </style>
 </head>
@@ -689,7 +266,6 @@
           </div>
           <span>四川区县池 · 随机</span>
         </div>
-
         <div class="wheel-container">
           <div class="pointer"></div>
           <div id="wheel">
@@ -700,7 +276,6 @@
             </div>
           </div>
         </div>
-
         <button id="spin-btn">Spin the Wheel</button>
         <div id="result"></div>
       </div>
@@ -736,11 +311,6 @@
             <div class="guide-title">携程出行</div>
             <div class="guide-desc">快速浏览当地热门景点、跟团游、酒店与交通产品。</div>
           </a>
-        </div>
-        <!-- 2.2：给小红书链接加提示 -->
-        <div class="note">
-          小红书在部分手机浏览器或微信内可能屏蔽网页访问，如遇「网页不存在」，
-          建议复制目的地名称到小红书 App 内搜索查看攻略。
         </div>
       </div>
     </div>
@@ -828,8 +398,8 @@
     let destMarker;
     let lastDestination = "";
 
-    let originLngLat = null;   // 自动完成选中的精确起点
-    let currentLngLat = null;  // 浏览器定位的当前位置
+    let originLngLat = null;
+    let currentLngLat = null;
     let districtSearch;
     let districtPolygon;
 
@@ -856,8 +426,7 @@
         const end = (i + 1) * step;
         gradientParts.push(`${segColors[i]} ${start}deg ${end}deg`);
       }
-      wheelInner.style.backgroundImage =
-        "conic-gradient(" + gradientParts.join(",") + ")";
+      wheelInner.style.backgroundImage = "conic-gradient(" + gradientParts.join(",") + ")";
     }
     updateWheelBackground();
 
@@ -872,33 +441,14 @@
       map = new AMap.Map("map-container", {
         zoom: 7,
         center: [104.0668, 30.5728],
-        mapStyle: "amap://styles/dark"
+        mapStyle: "amap://styles/dark",
       });
 
-      placeSearch = new AMap.PlaceSearch({
-        city: "四川省",
-        citylimit: true
-      });
+      placeSearch = new AMap.PlaceSearch({ city: "四川省", citylimit: true });
+      transfer = new AMap.Transfer({ map: map, panel: "transfer-panel", city: "成都", policy: AMap.TransferPolicy.LEAST_TIME });
+      districtSearch = new AMap.DistrictSearch({ level: 'district', subdistrict: 0, extensions: 'all' });
 
-      transfer = new AMap.Transfer({
-        map: map,
-        panel: "transfer-panel",
-        city: "成都",
-        policy: AMap.TransferPolicy.LEAST_TIME
-      });
-
-      districtSearch = new AMap.DistrictSearch({
-        level: 'district',
-        subdistrict: 0,
-        extensions: 'all'
-      });
-
-      const autoComplete = new AMap.AutoComplete({
-        input: "route-origin",
-        city: "四川省",
-        citylimit: false
-      });
-
+      const autoComplete = new AMap.AutoComplete({ input: "route-origin", city: "四川省", citylimit: false });
       autoComplete.on("select", function (e) {
         if (e.poi && e.poi.location) {
           originLngLat = e.poi.location;
@@ -907,83 +457,37 @@
         }
       });
 
-      const geolocation = new AMap.Geolocation({
-        enableHighAccuracy: true,
-        timeout: 10000,
-        position: 'RB',
-        offset: [10, 20],
-        zoomToAccuracy: false
-      });
+      const geolocation = new AMap.Geolocation({ enableHighAccuracy: true, timeout: 10000, position: 'RB', offset: [10, 20], zoomToAccuracy: false });
       map.addControl(geolocation);
       geolocation.getCurrentPosition(function(status, result) {
         if (status === 'complete' && result.position) {
           currentLngLat = result.position;
-          console.log('定位成功，当前位置：', currentLngLat);
-        } else {
-          console.warn('定位失败或用户拒绝授权，将不使用自动起点');
+          console.log('定位成功', currentLngLat);
         }
       });
     }
 
     function showDestinationOnMap(destination) {
       if (!placeSearch || !map) return;
-
       const keyword = destination + " 四川";
-
       placeSearch.search(keyword, function(status, result) {
-        if (status !== "complete" || !result.poiList || !result.poiList.pois.length) {
-          console.warn("未找到该目的地的具体位置：", destination);
-          return;
-        }
-
+        if (status !== "complete" || !result.poiList || !result.poiList.pois.length) return;
         const poi = result.poiList.pois[0];
-        const lnglat = poi.location;
-
-        if (destMarker) {
-          map.remove(destMarker);
-        }
-
-        destMarker = new AMap.Marker({
-          position: lnglat,
-          map: map,
-          title: destination
-        });
-
-        map.setZoomAndCenter(9, lnglat);
+        if (destMarker) map.remove(destMarker);
+        destMarker = new AMap.Marker({ position: poi.location, map: map, title: destination });
+        map.setZoomAndCenter(9, poi.location);
       });
 
       if (!districtSearch) return;
-
       districtSearch.search(destination, function(status, result) {
-        if (status !== "complete" || !result.districtList || !result.districtList.length) {
-          console.warn("未找到行政区边界：", destination);
-          return;
-        }
-
+        if (status !== "complete" || !result.districtList || !result.districtList.length) return;
         const district = result.districtList[0];
-        const boundaries = district.boundaries;
-
-        if (!boundaries || !boundaries.length) {
-          console.warn("该行政区没有边界数据：", destination);
-          return;
-        }
-
-        if (districtPolygon) {
-          map.remove(districtPolygon);
-          districtPolygon = null;
-        }
-
+        if (!district.boundaries) return;
+        if (districtPolygon) { map.remove(districtPolygon); districtPolygon = null; }
         districtPolygon = new AMap.Polygon({
-          path: boundaries,
-          strokeColor: '#f97316',
-          strokeWeight: 2,
-          strokeOpacity: 0.9,
-          strokeStyle: 'dashed',
-          strokeDasharray: [8, 6],
-          fillOpacity: 0,
-          zIndex: 50
+          path: district.boundaries, strokeColor: '#f97316', strokeWeight: 2,
+          strokeOpacity: 0.9, strokeStyle: 'dashed', strokeDasharray: [8, 6], fillOpacity: 0, zIndex: 50
         });
-
         map.add(districtPolygon);
       });
     }
@@ -993,13 +497,17 @@
       guideDestDiv.textContent = "当前目的地：" + destination;
       routeDestLabel.textContent = destination + "（四川）";
 
-      const xhsUrl =
-        "https://www.xiaohongshu.com/search_result?keyword=" +
-        encodeQuery(destination + " 旅游 攻略");
-      const ctripUrl =
-        "https://www.ctrip.com/?keyword=" + encodeQuery(destination);
+  const xhsQuery = `${destination} 攻略 旅游`; // 目的地 + 空格 + 攻略 + 空格 + 旅游
+  const xhsUrl = `https://www.xiaohongshu.com/search_result?keyword=${encodeQuery(xhsQuery)}`;
+  const xhsDeeplink = `xhsdiscover://search/result?keyword=${encodeQuery(xhsQuery)}`;
 
+
+      // 电脑端保持原链接
       xhsLink.href = xhsUrl;
+      // 手机端存储 deeplink 供事件调用
+      xhsLink.dataset.deeplink = xhsDeeplink;
+
+      const ctripUrl = `https://www.ctrip.com?keyword=${encodeQuery(destination)}`;
       ctripLink.href = ctripUrl;
 
       showDestinationOnMap(destination);
@@ -1007,123 +515,98 @@
 
     function geocodeToLngLat(keyword) {
       return new Promise((resolve, reject) => {
-        if (!placeSearch) {
-          reject("placeSearch not ready");
-          return;
-        }
-
+        if (!placeSearch) { reject("placeSearch not ready"); return; }
         placeSearch.search(keyword, function (status, result) {
-          if (status !== "complete" || !result.poiList || !result.poiList.pois.length) {
-            reject("未找到位置：" + keyword);
-            return;
-          }
-          const poi = result.poiList.pois[0];
-          resolve(poi.location);
+          if (status !== "complete" || !result.poiList || !result.poiList.pois.length) { reject("未找到位置"); return; }
+          resolve(result.poiList.pois[0].location);
         });
       });
     }
 
     function planBusRoute(originText, destText) {
       if (!transfer) return;
-
       let originPromise;
-      if (originLngLat) {
-        originPromise = Promise.resolve(originLngLat);
-      } else if (!originText && currentLngLat) {
-        originPromise = Promise.resolve(currentLngLat);
-      } else {
-        originPromise = geocodeToLngLat(originText);
-      }
+      if (originLngLat) originPromise = Promise.resolve(originLngLat);
+      else if (!originText && currentLngLat) originPromise = Promise.resolve(currentLngLat);
+      else originPromise = geocodeToLngLat(originText);
 
-      Promise.all([
-        originPromise,
-        geocodeToLngLat(destText)
-      ]).then(([originPos, destPos]) => {
-        transfer.search(
-          originPos,
-          destPos,
-          function (status, result) {
-            console.log("transfer status:", status, result);
-            if (status !== "complete") {
-              alert("公交路线查询失败：" + (result && result.info ? result.info : "未知原因"));
-            }
-          }
-        );
-      }).catch(err => {
-        console.warn("bus geocode error:", err);
-        if (!originText && !currentLngLat) {
-          alert("无法获取出发地，请允许浏览器定位或手动输入并从下拉列表中选择具体地点。");
-        } else {
-          alert(typeof err === "string"
-            ? err
-            : "公交查询失败，地址解析不出来，请写详细一点。");
-        }
-      });
+      Promise.all([originPromise, geocodeToLngLat(destText)]).then(([originPos, destPos]) => {
+        transfer.search(originPos, destPos, function (status, result) {
+          if (status !== "complete") alert("查询失败：" + (result && result.info ? result.info : "未知"));
+        });
+      }).catch(err => alert("无法获取起点或终点位置"));
     }
 
     busBtn.addEventListener("click", () => {
       const origin = routeOriginInput.value.trim();
-      if (!origin && !currentLngLat) {
-        alert("请填写出发地，或允许浏览器定位以使用当前位置。");
-        return;
-      }
-      if (!lastDestination) {
-        alert("请先通过左侧转盘抽取一个目的地。");
-        return;
-      }
-      const destText = lastDestination + " 四川";
-      planBusRoute(origin, destText);
+      if (!origin && !currentLngLat) { alert("请填写出发地或允许定位"); return; }
+      if (!lastDestination) { alert("请先抽取目的地"); return; }
+      planBusRoute(origin, lastDestination + " 四川");
     });
 
     function spin() {
       if (spinning) return;
-      spinning = true;
-      spinBtn.disabled = true;
-      resultDiv.textContent = "";
-
-      const n = cities.length;
-      const step = 360 / n;
-
+      spinning = true; spinBtn.disabled = true; resultDiv.textContent = "";
+      const n = cities.length; const step = 360 / n;
       const targetIndex = Math.floor(Math.random() * n);
-
-      const minAngle = targetIndex * step;
-      const maxAngle = (targetIndex + 1) * step;
-      const targetCenter = (minAngle + maxAngle) / 2;
-
-      const extraTurns = 5 + Math.floor(Math.random() * 3);
-      const targetRotation = -(extraTurns * 360 + targetCenter);
+      const targetRotation = -( (5 + Math.floor(Math.random() * 3)) * 360 + (targetIndex * step + (targetIndex + 1) * step) / 2 );
       const finalRotation = currentRotation + (targetRotation - currentRotation);
 
-      wheelInner.style.transition =
-        "transform 4s cubic-bezier(0.22, 0.12, 0.05, 1)";
+      wheelInner.style.transition = "transform 4s cubic-bezier(0.22, 0.12, 0.05, 1)";
       wheelInner.style.transform = `rotate(${finalRotation}deg)`;
-
       centerText.style.transition = "transform 0.2s ease-out";
       centerText.style.transform = "translate(-50%, -50%) scale(0.96)";
 
       setTimeout(() => {
         currentRotation = finalRotation % 360;
-
         const selectedCity = cities[targetIndex];
-        centerText.innerHTML =
-          "<span>这次就去</span><strong>" + selectedCity + "</strong>";
+        centerText.innerHTML = "<span>这次就去</span><strong>" + selectedCity + "</strong>";
         resultDiv.textContent = "本次目的地：" + selectedCity;
-
         updateGuideLinks(selectedCity);
-
         centerText.style.transform = "translate(-50%, -50%) scale(1.06)";
-        setTimeout(() => {
-          centerText.style.transform = "translate(-50%, -50%) scale(1)";
-        }, 160);
-
-        wheelInner.style.transition = "none";
-        spinning = false;
-        spinBtn.disabled = false;
+        setTimeout(() => centerText.style.transform = "translate(-50%, -50%) scale(1)", 160);
+        wheelInner.style.transition = "none"; spinning = false; spinBtn.disabled = false;
       }, 4100);
     }
 
     spinBtn.addEventListener("click", spin);
     centerText.addEventListener("click", spin);
+
+    // Strict mobile detection
+    function isMobileDevice() {
+      // Check standard mobile user agents
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    if (xhsLink) {
+      xhsLink.addEventListener('click', function (e) {
+        // If NOT mobile, do absolutely nothing (allow default href traverse)
+        if (!isMobileDevice()) return;
+
+        // Mobile logic
+        const deeplink = this.dataset.deeplink;
+        if (!deeplink) return;
+
+        e.preventDefault();
+        const fallback = this.href;
+        const t0 = Date.now();
+
+        // Attempt to launch App
+        window.location.href = deeplink;
+
+        // Fallback to web if app doesn't open
+        setTimeout(() => {
+          if (Date.now() - t0 < 2000) {
+            window.location.href = fallback;
+          }
+        }, 1500);
+      });
+    }
+
+    // 监听窗口大小变化，重置地图尺寸
+    window.addEventListener('resize', () => {
+        if (map && map.resize) map.resize();
+    });
 
     window.addEventListener("load", initMap);
   </script>
