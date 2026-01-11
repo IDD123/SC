@@ -2,17 +2,17 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>四川去哪儿大转盘</title>
+  <title>四川去哪儿大转盘 · 高级出行面板</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
- 
+  <!-- 高德安全密钥 -->
   <script>
     window._AMapSecurityConfig = {
       securityJsCode: '4ab9f87a7b60637c962bb1c17645ec18'
     };
   </script>
 
-  
+  <!-- JSAPI Key + 插件：自动完成、地点搜索、公交、定位、行政区查询 -->
   <script type="text/javascript"
     src="https://webapi.amap.com/maps?v=2.0&key=c328a33cebce0cb2138acaee66bdc61c&plugin=AMap.AutoComplete,AMap.PlaceSearch,AMap.Transfer,AMap.Geolocation,AMap.DistrictSearch">
   </script>
@@ -51,7 +51,7 @@
       flex-direction: column;
     }
 
-  
+    /* 顶部标题条：半透明玻璃风 */
     .app-header {
       padding: 8px 16px 4px;
       display: flex;
@@ -94,7 +94,7 @@
       letter-spacing: 0.06em;
     }
 
-   
+    /* 主布局：三列仪表盘（PC 默认） */
     .layout {
       flex: 1;
       display: flex;
@@ -114,7 +114,7 @@
       min-width: 0;
     }
 
-  
+    /* 比例：左稍小，中间最大，右固定宽度（PC） */
     .left-panel { flex: 0.5; align-items: center; justify-content: center; }
     .center-panel { flex: 1.5; gap: 10px; }
     .right-panel {
@@ -123,7 +123,7 @@
       max-width: 380px;
     }
 
-    
+    /* 卡片：高级深色 + 内发光边界 */
     .card {
       background: radial-gradient(circle at top left, #020617, #020617);
       border-radius: 18px;
@@ -188,7 +188,7 @@
       background: rgba(15, 23, 42, 0.8);
     }
 
-   
+    /* 转盘装饰框：加标题和统计条 */
     .wheel-card-header {
       width: 100%;
       max-width: 320px;
@@ -214,7 +214,7 @@
       box-shadow: 0 0 12px rgba(248, 113, 22, 0.9);
     }
 
-   
+    /* 转盘本体：橙色系分段 + 光晕 */
     .wheel-container {
       position: relative;
       width: 320px;
@@ -350,7 +350,7 @@
       color: var(--text-sub);
     }
 
-   
+    /* 中部地图 */
     #map-container {
       width: 100%;
       flex: 1;
@@ -359,7 +359,7 @@
       border: 1px solid rgba(148, 163, 184, 0.4);
     }
 
-  
+    /* 攻略卡片 */
     .guide-header-line {
       display: flex;
       justify-content: space-between;
@@ -409,6 +409,7 @@
       color: var(--text-sub);
     }
 
+    /* 右侧出行表单 + 公交方案 */
     .route-form {
       display: flex;
       flex-direction: column;
@@ -483,121 +484,189 @@
         0 0 0 1px rgba(15, 23, 42, 1);
     }
 
-.route-panel {
-  margin-top: 4px;
-  padding: 6px 4px;
-  font-size: 13px;
-  line-height: 1.6;
-  overflow-y: auto;
-  flex: 1;
-}
+    .route-panel {
+      margin-top: 4px;
+      padding: 6px 4px;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-y: auto;
+      flex: 1;
+    }
 
+    /* 公共交通方案面板：整体高对比白字 */
+    #transfer-panel {
+      border-radius: 12px;
+      border: 1px solid rgba(248, 250, 252, 0.35);
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.99),
+        rgba(15, 23, 42, 0.96)
+      );
+      color: #f9fafb;
+      font-size: 14px;
+    }
 
+    #transfer-panel .amap-lib-transfer {
+      color: #f9fafb;
+      font-size: 14px;
+      line-height: 1.7;
+    }
 
-  
-#transfer-panel {
-  border-radius: 12px;
-  border: 1px solid rgba(248, 250, 252, 0.35);
-  background: linear-gradient(
-    to bottom,
-    rgba(15, 23, 42, 0.99),
-    rgba(15, 23, 42, 0.96)
-  );
-  color: #f9fafb;            
-  font-size: 14px;           
-}
+    #transfer-panel .amap-lib-transfer .plan {
+      border-color: rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.98);
+      margin: 8px 8px 10px;
+      padding: 8px 10px;
+      border-radius: 12px;
+    }
 
+    #transfer-panel .amap-lib-transfer .plan:hover {
+      border-color: rgba(248, 113, 22, 0.95);
+      background: rgba(15, 23, 42, 1);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.95);
+    }
 
-#transfer-panel .amap-lib-transfer {
-  color: #f9fafb;
-  font-size: 14px;
-  line-height: 1.7;
-}
+    #transfer-panel .amap-lib-transfer .title {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
 
+    #transfer-panel .amap-lib-transfer li,
+    #transfer-panel .amap-lib-transfer .segment-list {
+      color: #f3f4f6;
+      font-size: 13px;
+    }
 
-#transfer-panel .amap-lib-transfer .plan {
-  border-color: rgba(148, 163, 184, 0.9);
-  background: rgba(15, 23, 42, 0.98);
-  margin: 8px 8px 10px;
-  padding: 8px 10px;
-  border-radius: 12px;
-}
+    #transfer-panel a {
+      color: #fb923c;
+      font-weight: 600;
+    }
 
+    #transfer-panel .amap-lib-transfer .plan .info,
+    #transfer-panel .amap-lib-transfer .tip {
+      font-size: 12px;
+      color: #e5e7eb;
+    }
 
-#transfer-panel .amap-lib-transfer .plan:hover {
-  border-color: rgba(248, 113, 22, 0.95);
-  background: rgba(15, 23, 42, 1);
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.95);
-}
+    #transfer-panel,
+    #transfer-panel * {
+      background-color: transparent !important;
+    }
 
+    #transfer-panel {
+      border-radius: 12px;
+      border: 1px solid rgba(248, 250, 252, 0.35);
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.99),
+        rgba(15, 23, 42, 0.96)
+      ) !important;
+      color: #f9fafb;
+      font-size: 14px;
+    }
 
-#transfer-panel .amap-lib-transfer .title {
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 14px;
-  margin-bottom: 4px;
-}
+    #transfer-panel .amap-lib-transfer {
+      background: transparent !important;
+      color: #f9fafb;
+    }
 
+    #transfer-panel .amap-lib-transfer .plan {
+      background: rgba(15, 23, 42, 0.98) !important;
+      border-color: rgba(148, 163, 184, 0.9) !important;
+    }
 
-#transfer-panel .amap-lib-transfer li,
-#transfer-panel .amap-lib-transfer .segment-list {
-  color: #f3f4f6;
-  font-size: 13px;
-}
+    #transfer-panel .amap-lib-transfer .plan:hover {
+      background: rgba(15, 23, 42, 1) !important;
+    }
 
+    #transfer-panel .amap-lib-transfer .plan *,
+    #transfer-panel .amap-lib-transfer .segment-list,
+    #transfer-panel .amap-lib-transfer .plan .info {
+      background-color: transparent !important;
+    }
 
-#transfer-panel a {
-  color: #fb923c;
-  font-weight: 600;
-}
+    .note {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
 
+    /* ========== 手机端适配：关键部分 ========== */
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+        height: auto;
+        padding: 8px;
+      }
 
-#transfer-panel .amap-lib-transfer .plan .info,
-#transfer-panel .amap-lib-transfer .tip {
-  font-size: 12px;
-  color: #e5e7eb;
-}
+      .left-panel,
+      .center-panel,
+      .right-panel {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+      }
 
+      .left-panel {
+        align-items: center;
+        justify-content: flex-start;
+      }
 
-#transfer-panel,
-#transfer-panel * {
-  background-color: transparent !important;
-}
+      .card {
+        margin-bottom: 10px;
+      }
 
-/
-#transfer-panel {
-  border-radius: 12px;
-  border: 1px solid rgba(248, 250, 252, 0.35);
-  background: linear-gradient(
-    to bottom,
-    rgba(15, 23, 42, 0.99),
-    rgba(15, 23, 42, 0.96)
-  ) !important;
-  color: #f9fafb;
-  font-size: 14px;
-}
+      /* 转盘在手机上自适应宽度 */
+      .wheel-container {
+        width: 100%;
+        max-width: 280px;
+        height: auto;
+        aspect-ratio: 1 / 1;
+      }
 
-#transfer-panel .amap-lib-transfer {
-  background: transparent !important;
-  color: #f9fafb;
-}
+      #wheel {
+        width: 100%;
+        height: 100%;
+      }
 
-#transfer-panel .amap-lib-transfer .plan {
-  background: rgba(15, 23, 42, 0.98) !important;
-  border-color: rgba(148, 163, 184, 0.9) !important;
-}
+      .panel-title {
+        font-size: 12px;
+      }
 
-#transfer-panel .amap-lib-transfer .plan:hover {
-  background: rgba(15, 23, 42, 1) !important;
-}
+      .app-header {
+        padding: 8px 10px;
+      }
 
+      .app-title h1 {
+        font-size: 16px;
+      }
 
-#transfer-panel .amap-lib-transfer .plan *,
-#transfer-panel .amap-lib-transfer .segment-list,
-#transfer-panel .amap-lib-transfer .plan .info {
-  background-color: transparent !important;
-}
+      .app-title span {
+        font-size: 11px;
+      }
 
+      .app-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+      }
+
+      /* 地图高度在手机上设定一个较合适的固定值 */
+      #map-container {
+        height: 260px;
+      }
+
+      /* 右侧面板不再限制 max-width */
+      .right-panel {
+        max-width: 100%;
+      }
+
+      .route-panel {
+        max-height: 260px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -610,7 +679,7 @@
   </header>
 
   <div class="layout">
-    
+    <!-- 左：转盘 -->
     <div class="left-panel">
       <div class="card" style="align-items:center;">
         <div class="wheel-card-header">
@@ -650,7 +719,6 @@
       <div class="card center-guide-card">
         <div class="guide-header-line">
           <span class="panel-title">内容攻略</span>
-         
         </div>
         <div id="guide-destination" class="guide-destination">
           还没有抽取目的地，先在左边转盘抽一次吧。
@@ -669,13 +737,15 @@
             <div class="guide-desc">快速浏览当地热门景点、跟团游、酒店与交通产品。</div>
           </a>
         </div>
+        <!-- 2.2：给小红书链接加提示 -->
         <div class="note">
-          
+          小红书在部分手机浏览器或微信内可能屏蔽网页访问，如遇「网页不存在」，
+          建议复制目的地名称到小红书 App 内搜索查看攻略。
         </div>
       </div>
     </div>
 
-    
+    <!-- 右：公共交通出行 -->
     <div class="right-panel">
       <div class="card right-form-card">
         <div class="panel-title-row">
@@ -695,9 +765,6 @@
             <button id="bus-btn" class="route-btn">规划公共交通路线</button>
           </div>
         </div>
-        <div class="note">
-         
-        </div>
       </div>
 
       <div class="card right-transfer-card">
@@ -705,9 +772,7 @@
           <div class="panel-title">公共交通方案</div>
           <div class="panel-tag">时间 · 换乘 · 步行</div>
         </div>
-        <div id="transfer-panel" class="route-panel">
-          
-        </div>
+        <div id="transfer-panel" class="route-panel"></div>
       </div>
     </div>
   </div>
@@ -763,13 +828,12 @@
     let destMarker;
     let lastDestination = "";
 
-    let originLngLat = null;   
-    let currentLngLat = null;  
+    let originLngLat = null;   // 自动完成选中的精确起点
+    let currentLngLat = null;  // 浏览器定位的当前位置
     let districtSearch;
     let districtPolygon;
 
     function generateColors(n) {
-      
       const colors = [];
       const baseHue = 20;
       const hueRange = 20;
@@ -808,7 +872,7 @@
       map = new AMap.Map("map-container", {
         zoom: 7,
         center: [104.0668, 30.5728],
-        mapStyle: "amap://styles/dark"  
+        mapStyle: "amap://styles/dark"
       });
 
       placeSearch = new AMap.PlaceSearch({
@@ -1065,4 +1129,3 @@
   </script>
 </body>
 </html>
-
