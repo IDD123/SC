@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>四川去哪儿大转盘 · 高级出行面板</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 高德安全密钥 -->
+  <script>
+    window._AMapSecurityConfig = {
+      securityJsCode: '4ab9f87a7b60637c962bb1c17645ec18'
+    };
+  </script>
+
+  <!-- JSAPI Key + 插件：自动完成、地点搜索、公交、定位、行政区查询 -->
+  <script type="text/javascript"
+    src="https://webapi.amap.com/maps?v=2.0&key=c328a33cebce0cb2138acaee66bdc61c&plugin=AMap.AutoComplete,AMap.PlaceSearch,AMap.Transfer,AMap.Geolocation,AMap.DistrictSearch">
+  </script>
+
+  <style>
+    :root {
+      --bg-main: #020617;
+      --bg-card: #020617;
+      --bg-card-elevated: #020617;
+      --border-soft: rgba(148, 163, 184, 0.25);
+      --accent: #f97316;
+      --accent-soft: rgba(248, 113, 22, 0.25);
+      --accent-strong: #fb923c;
+      --text-main: #e5e7eb;
+      --text-sub: #9ca3af;
+      --text-muted: #6b7280;
+      --danger: #f97373;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #020617 100%);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部标题条：半透明玻璃风 */
+    .app-header {
+      padding: 8px 16px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.85),
+        rgba(15, 23, 42, 0.2)
+      );
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      z-index: 10;
+    }
+    .app-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .app-title h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #f9fafb;
+    }
+    .app-title span {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .app-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, #f97316, #ea580c);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(248, 113, 22, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* 主布局：三列仪表盘 */
+    .layout {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: calc(100vh - 52px);
+      padding: 10px 14px 14px;
+      gap: 12px;
+    }
+
+    .left-panel,
+    .center-panel,
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-width: 0;
+    }
+
+    /* 比例：左稍小，中间最大，右固定宽度 */
+    .left-panel { flex: 0.5; align-items: center; justify-content: center; }
+    .center-panel { flex: 1.5; gap: 10px; }
+    .right-panel {
+      flex: 1;
+      gap: 10px;
+      max-width: 380px;
+    }
+
+    /* 卡片：高级深色 + 内发光边界 */
+    .card {
+      background: radial-gradient(circle at top left, #020617, #020617);
+      border-radius: 18px;
+      padding: 10px 12px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle at top right, rgba(248, 113, 22, 0.06), transparent 60%);
+      pointer-events: none;
+    }
+
+    .card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .center-map-card,
+    .right-transfer-card {
+      flex: 1;
+    }
+    .center-guide-card,
+    .right-form-card {
+      flex: 0 0 auto;
+    }
+
+    .panel-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #f9fafb;
+    }
+
+    .panel-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-sub);
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    /* 转盘装饰框：加标题和统计条 */
+    .wheel-card-header {
+      width: 100%;
+      max-width: 320px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-sub);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .wheel-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .wheel-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 1px 1px, #f97316, #ea580c);
+      box-shadow: 0 0 12px rgba(248, 113, 22, 0.9);
+    }
+
+    /* 转盘本体：橙色系分段 + 光晕 */
+    .wheel-container {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      margin-bottom: 14px;
+      border-radius: 50%;
+      padding: 10px;
+      background: radial-gradient(circle at 30% 0, rgba(248, 250, 252, 0.12), transparent 50%);
+      box-shadow:
+        0 0 40px rgba(248, 113, 22, 0.35),
+        0 24px 55px rgba(0, 0, 0, 0.9);
+    }
+    #wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 5px solid rgba(15, 23, 42, 0.9);
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #020617 0, #020617 45%, #0b1120 80%, #020617 100%);
+    }
+    #wheel-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      transition: transform 4s cubic-bezier(0.22, 0.12, 0.05, 1);
+      will-change: transform;
+    }
+    .pointer {
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-bottom: 24px solid #f9fafb;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8));
+      z-index: 10;
+    }
+    .pointer::after {
+      content: "";
+      position: absolute;
+      left: -7px;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 1px 1px, #f97316, #ea580c);
+      box-shadow: 0 0 12px rgba(248, 113, 22, 0.9);
+    }
+
+    #center-text {
+      position: absolute;
+      width: 86px;
+      height: 86px;
+      background: radial-gradient(circle at top, #0b1120, #020617);
+      border-radius: 50%;
+      border: 2px solid rgba(148, 163, 184, 0.7);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-sub);
+      box-shadow:
+        0 0 18px rgba(15, 23, 42, 0.9),
+        0 0 30px rgba(0, 0, 0, 0.95);
+      z-index: 5;
+      cursor: pointer;
+      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+    }
+    #center-text span {
+      display: block;
+      line-height: 1.3;
+    }
+    #center-text strong {
+      color: #f9fafb;
+      font-size: 13px;
+    }
+    #center-text:hover {
+      transform: translate(-50%, -50%) scale(1.03);
+      box-shadow:
+        0 0 22px rgba(248, 113, 22, 0.5),
+        0 0 40px rgba(15, 23, 42, 1);
+    }
+
+    #spin-btn {
+      padding: 9px 26px;
+      font-size: 13px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: #0b1120;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow:
+        0 12px 30px rgba(248, 113, 22, 0.6),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      margin-bottom: 6px;
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    }
+    #spin-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 18px 40px rgba(248, 113, 22, 0.7),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+    #spin-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow:
+        0 8px 20px rgba(248, 113, 22, 0.45),
+        0 0 0 1px rgba(15, 23, 42, 1);
+    }
+    #spin-btn:disabled {
+      background: linear-gradient(135deg, #4b5563, #374151);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    #result {
+      font-size: 13px;
+      text-align: center;
+      min-height: 18px;
+      color: var(--text-sub);
+    }
+
+    /* 中部地图 */
+    #map-container {
+      width: 100%;
+      flex: 1;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    /* 攻略卡片 */
+    .guide-header-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+    .guide-destination {
+      font-size: 13px;
+      color: var(--text-main);
+    }
+    .guide-row {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .guide-card {
+      flex: 1;
+      min-width: 150px;
+      background: radial-gradient(circle at top left, #020617, #020617);
+      border-radius: 12px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .guide-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+      border-color: rgba(248, 113, 22, 0.7);
+      background: radial-gradient(circle at top left, rgba(248, 113, 22, 0.16), #020617);
+    }
+    .guide-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #f9fafb;
+      margin-bottom: 4px;
+    }
+    .guide-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    /* 右侧出行表单 + 公交方案 */
+    .route-form {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .route-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--text-sub);
+    }
+    .route-form input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text-main);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+    }
+    .route-form input::placeholder {
+      color: var(--text-muted);
+    }
+    .route-form input:focus {
+      border-color: var(--accent-strong);
+      background: #020617;
+      box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.5);
+    }
+
+    .route-destination {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .route-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .route-btn {
+      padding: 7px 14px;
+      font-size: 11px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      color: #020617;
+      white-space: nowrap;
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow:
+        0 12px 30px rgba(22, 163, 74, 0.55),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    }
+    .route-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 16px 36px rgba(22, 163, 74, 0.7),
+        0 0 0 1px rgba(15, 23, 42, 1);
+    }
+    .route-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow:
+        0 8px 20px rgba(22, 163, 74, 0.45),
+        0 0 0 1px rgba(15, 23, 42, 1);
+    }
+
+.route-panel {
+  margin-top: 4px;
+  padding: 6px 4px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-y: auto;
+  flex: 1;
+}
+
+
+
+    /* 对高德默认 panel 的一点皮肤（Transfer 会往里面插 DOM） */
+  /* 公共交通方案面板：提高对比度和可读性 */
+/* 公共交通方案面板：整体高对比白字 */
+#transfer-panel {
+  border-radius: 12px;
+  border: 1px solid rgba(248, 250, 252, 0.35);
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 23, 42, 0.99),
+    rgba(15, 23, 42, 0.96)
+  );
+  color: #f9fafb;              /* 全局主文字白色 */
+  font-size: 14px;             /* 整体字号略放大 */
+}
+
+/* 高德公交容器基准样式 */
+#transfer-panel .amap-lib-transfer {
+  color: #f9fafb;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* 每一条方案卡片 */
+#transfer-panel .amap-lib-transfer .plan {
+  border-color: rgba(148, 163, 184, 0.9);
+  background: rgba(15, 23, 42, 0.98);
+  margin: 8px 8px 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+}
+
+/* Hover 高亮整条方案 */
+#transfer-panel .amap-lib-transfer .plan:hover {
+  border-color: rgba(248, 113, 22, 0.95);
+  background: rgba(15, 23, 42, 1);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.95);
+}
+
+/* 方案标题行：总时间 / 换乘信息 */
+#transfer-panel .amap-lib-transfer .title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+/* 线路步骤和站名：主文字色 */
+#transfer-panel .amap-lib-transfer li,
+#transfer-panel .amap-lib-transfer .segment-list {
+  color: #f3f4f6;
+  font-size: 13px;
+}
+
+/* 链接（线路号、站名）统一主色，保持醒目 */
+#transfer-panel a {
+  color: #fb923c;
+  font-weight: 600;
+}
+
+/* 较次要的小说明，仍然要可读，不用太暗 */
+#transfer-panel .amap-lib-transfer .plan .info,
+#transfer-panel .amap-lib-transfer .tip {
+  font-size: 12px;
+  color: #e5e7eb;
+}
+
+/* 彻底去掉公共交通方案中的白底，强制深色背景 */
+#transfer-panel,
+#transfer-panel * {
+  background-color: transparent !important;
+}
+
+/* 再给主要容器和每条方案卡片单独设深色背景 */
+#transfer-panel {
+  border-radius: 12px;
+  border: 1px solid rgba(248, 250, 252, 0.35);
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 23, 42, 0.99),
+    rgba(15, 23, 42, 0.96)
+  ) !important;
+  color: #f9fafb;
+  font-size: 14px;
+}
+
+#transfer-panel .amap-lib-transfer {
+  background: transparent !important;
+  color: #f9fafb;
+}
+
+#transfer-panel .amap-lib-transfer .plan {
+  background: rgba(15, 23, 42, 0.98) !important;
+  border-color: rgba(148, 163, 184, 0.9) !important;
+}
+
+#transfer-panel .amap-lib-transfer .plan:hover {
+  background: rgba(15, 23, 42, 1) !important;
+}
+
+/* 去掉可能残留的白色块，例如列表、标题栏等 */
+#transfer-panel .amap-lib-transfer .plan *,
+#transfer-panel .amap-lib-transfer .segment-list,
+#transfer-panel .amap-lib-transfer .plan .info {
+  background-color: transparent !important;
+}
+
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-title">
+      <h1>Sichuan Trip Deck</h1>
+      <span>随机区县 · 实时公交 · 区域高亮</span>
+    </div>
+    <div class="app-badge">Weekend Explorer</div>
+  </header>
+
+  <div class="layout">
+    <!-- 左：转盘 -->
+    <div class="left-panel">
+      <div class="card" style="align-items:center;">
+        <div class="wheel-card-header">
+          <div class="wheel-meta">
+            <div class="wheel-dot"></div>
+            <span>Destination Picker</span>
+          </div>
+          <span>四川区县池 · 随机</span>
+        </div>
+
+        <div class="wheel-container">
+          <div class="pointer"></div>
+          <div id="wheel">
+            <div id="wheel-inner"></div>
+            <div id="center-text">
+              <span>点击抽取</span>
+              <strong>今天去哪</strong>
+            </div>
+          </div>
+        </div>
+
+        <button id="spin-btn">Spin the Wheel</button>
+        <div id="result"></div>
+      </div>
+    </div>
+
+    <!-- 中：地图 + 攻略 -->
+    <div class="center-panel">
+      <div class="card center-map-card">
+        <div class="panel-title-row">
+          <div class="panel-title">实时地图视图</div>
+          <div class="panel-tag">高德 · 暗色样式</div>
+        </div>
+        <div id="map-container"></div>
+      </div>
+
+      <div class="card center-guide-card">
+        <div class="guide-header-line">
+          <span class="panel-title">内容攻略</span>
+         
+        </div>
+        <div id="guide-destination" class="guide-destination">
+          还没有抽取目的地，先在左边转盘抽一次吧。
+        </div>
+        <div class="guide-row">
+          <a id="xhs-link" class="guide-card"
+             href="https://www.xiaohongshu.com/explore"
+             target="_blank" rel="noopener noreferrer">
+            <div class="guide-title">小红书攻略</div>
+            <div class="guide-desc">查看笔记、路线分享、美食清单，用内容感受目的地氛围。</div>
+          </a>
+          <a id="ctrip-link" class="guide-card"
+             href="https://www.ctrip.com/"
+             target="_blank" rel="noopener noreferrer">
+            <div class="guide-title">携程出行</div>
+            <div class="guide-desc">快速浏览当地热门景点、跟团游、酒店与交通产品。</div>
+          </a>
+        </div>
+        <div class="note">
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- 右：公共交通出行 -->
+    <div class="right-panel">
+      <div class="card right-form-card">
+        <div class="panel-title-row">
+          <div class="panel-title">公共交通出行</div>
+          <div class="panel-tag">公交 / 地铁 · 换乘优选</div>
+        </div>
+        <div class="route-form">
+          <label>
+            出发地（可选）：
+            <input id="route-origin" type="text"
+                   placeholder="留空使用当前位置；推荐从下拉列表选择精确站点" />
+          </label>
+          <div class="route-destination">
+            目的地：<span id="route-dest-label">（等待转盘结果）</span>
+          </div>
+          <div class="route-buttons">
+            <button id="bus-btn" class="route-btn">规划公共交通路线</button>
+          </div>
+        </div>
+        <div class="note">
+         
+        </div>
+      </div>
+
+      <div class="card right-transfer-card">
+        <div class="panel-title-row">
+          <div class="panel-title">公共交通方案</div>
+          <div class="panel-tag">时间 · 换乘 · 步行</div>
+        </div>
+        <div id="transfer-panel" class="route-panel">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const places = [
+      "锦江区","青羊区","金牛区","武侯区","成华区",
+      "龙泉驿区","青白江区","新都区","温江区",
+      "双流区","郫都区","新津区",
+      "都江堰市","彭州市","邛崃市","崇州市","简阳市",
+      "金堂县","大邑县","蒲江县",
+      "自流井区","贡井区","大安区","沿滩区","荣县","富顺县",
+      "东区","西区","仁和区","米易县","盐边县",
+      "江阳区","纳溪区","龙马潭区","泸县","合江县","叙永县","古蔺县",
+      "旌阳区","罗江区","广汉市","什邡市","绵竹市","中江县",
+      "涪城区","游仙区","安州区","江油市","三台县","盐亭县","梓潼县",
+      "利州区","昭化区","朝天区","旺苍县","青川县","剑阁县","苍溪县",
+      "船山区","安居区","射洪市","蓬溪县","大英县",
+      "市中区","东兴区","隆昌市","威远县","资中县",
+      "沙湾区","五通桥区","金口河区",
+      "峨眉山市","犍为县","井研县","夹江县","沐川县",
+      "峨边彝族自治县","马边彝族自治县",
+      "顺庆区","高坪区","嘉陵区","阆中市",
+      "南部县","营山县","蓬安县","仪陇县","西充县",
+      "东坡区","彭山区","仁寿县","洪雅县","丹棱县","青神县",
+      "翠屏区","南溪区","叙州区",
+      "江安县","长宁县","高县","珙县",
+      "筠连县","兴文县","屏山县",
+      "广安区","前锋区","华蓥市","岳池县","武胜县","邻水县",
+      "通川区","达川区","万源市","宣汉县","开江县","大竹县","渠县",
+      "雨城区","名山区","荥经县","汉源县","石棉县","天全县",
+      "芦山县","宝兴县",
+      "巴州区","恩阳区","通江县","南江县","平昌县",
+      "雁江区","安岳县","乐至县"
+    ];
+    const cities = places;
+
+    const wheelInner = document.getElementById("wheel-inner");
+    const centerText = document.getElementById("center-text");
+    const spinBtn = document.getElementById("spin-btn");
+    const resultDiv = document.getElementById("result");
+
+    const guideDestDiv = document.getElementById("guide-destination");
+    const xhsLink = document.getElementById("xhs-link");
+    const ctripLink = document.getElementById("ctrip-link");
+    const routeOriginInput = document.getElementById("route-origin");
+    const routeDestLabel = document.getElementById("route-dest-label");
+    const busBtn = document.getElementById("bus-btn");
+
+    let map;
+    let placeSearch;
+    let transfer;
+    let destMarker;
+    let lastDestination = "";
+
+    let originLngLat = null;   // 自动完成选中的精确起点
+    let currentLngLat = null;  // 浏览器定位的当前位置
+    let districtSearch;
+    let districtPolygon;
+
+    function generateColors(n) {
+      // 橙色系分段：在 20~40 度色相范围内均匀分布
+      const colors = [];
+      const baseHue = 20;
+      const hueRange = 20;
+      for (let i = 0; i < n; i++) {
+        const t = i / n;
+        const hue = baseHue + hueRange * t;
+        const sat = 65 + 10 * Math.sin(t * Math.PI);
+        const light = 45 + 10 * Math.cos(t * Math.PI * 2);
+        colors.push(`hsl(${hue}, ${sat}%, ${light}%)`);
+      }
+      return colors;
+    }
+    const segColors = generateColors(cities.length);
+
+    function updateWheelBackground() {
+      const step = 360 / cities.length;
+      let gradientParts = [];
+      for (let i = 0; i < cities.length; i++) {
+        const start = i * step;
+        const end = (i + 1) * step;
+        gradientParts.push(`${segColors[i]} ${start}deg ${end}deg`);
+      }
+      wheelInner.style.backgroundImage =
+        "conic-gradient(" + gradientParts.join(",") + ")";
+    }
+    updateWheelBackground();
+
+    let currentRotation = 0;
+    let spinning = false;
+
+    function encodeQuery(q) {
+      return encodeURIComponent(q);
+    }
+
+    function initMap() {
+      map = new AMap.Map("map-container", {
+        zoom: 7,
+        center: [104.0668, 30.5728],
+        mapStyle: "amap://styles/dark"  // 暂用官方暗色样式，可换成你自己的样式ID [web:304]
+      });
+
+      placeSearch = new AMap.PlaceSearch({
+        city: "四川省",
+        citylimit: true
+      });
+
+      transfer = new AMap.Transfer({
+        map: map,
+        panel: "transfer-panel",
+        city: "成都",
+        policy: AMap.TransferPolicy.LEAST_TIME
+      });
+
+      districtSearch = new AMap.DistrictSearch({
+        level: 'district',
+        subdistrict: 0,
+        extensions: 'all'
+      });
+
+      const autoComplete = new AMap.AutoComplete({
+        input: "route-origin",
+        city: "四川省",
+        citylimit: false
+      });
+
+      autoComplete.on("select", function (e) {
+        if (e.poi && e.poi.location) {
+          originLngLat = e.poi.location;
+          routeOriginInput.value = e.poi.name || routeOriginInput.value;
+          map.setZoomAndCenter(12, e.poi.location);
+        }
+      });
+
+      const geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true,
+        timeout: 10000,
+        position: 'RB',
+        offset: [10, 20],
+        zoomToAccuracy: false
+      });
+      map.addControl(geolocation);
+      geolocation.getCurrentPosition(function(status, result) {
+        if (status === 'complete' && result.position) {
+          currentLngLat = result.position;
+          console.log('定位成功，当前位置：', currentLngLat);
+        } else {
+          console.warn('定位失败或用户拒绝授权，将不使用自动起点');
+        }
+      });
+    }
+
+    function showDestinationOnMap(destination) {
+      if (!placeSearch || !map) return;
+
+      const keyword = destination + " 四川";
+
+      placeSearch.search(keyword, function(status, result) {
+        if (status !== "complete" || !result.poiList || !result.poiList.pois.length) {
+          console.warn("未找到该目的地的具体位置：", destination);
+          return;
+        }
+
+        const poi = result.poiList.pois[0];
+        const lnglat = poi.location;
+
+        if (destMarker) {
+          map.remove(destMarker);
+        }
+
+        destMarker = new AMap.Marker({
+          position: lnglat,
+          map: map,
+          title: destination
+        });
+
+        map.setZoomAndCenter(9, lnglat);
+      });
+
+      if (!districtSearch) return;
+
+      districtSearch.search(destination, function(status, result) {
+        if (status !== "complete" || !result.districtList || !result.districtList.length) {
+          console.warn("未找到行政区边界：", destination);
+          return;
+        }
+
+        const district = result.districtList[0];
+        const boundaries = district.boundaries;
+
+        if (!boundaries || !boundaries.length) {
+          console.warn("该行政区没有边界数据：", destination);
+          return;
+        }
+
+        if (districtPolygon) {
+          map.remove(districtPolygon);
+          districtPolygon = null;
+        }
+
+        districtPolygon = new AMap.Polygon({
+          path: boundaries,
+          strokeColor: '#f97316',
+          strokeWeight: 2,
+          strokeOpacity: 0.9,
+          strokeStyle: 'dashed',
+          strokeDasharray: [8, 6],
+          fillOpacity: 0,
+          zIndex: 50
+        });
+
+        map.add(districtPolygon);
+      });
+    }
+
+    function updateGuideLinks(destination) {
+      lastDestination = destination;
+      guideDestDiv.textContent = "当前目的地：" + destination;
+      routeDestLabel.textContent = destination + "（四川）";
+
+      const xhsUrl =
+        "https://www.xiaohongshu.com/search_result?keyword=" +
+        encodeQuery(destination + " 旅游 攻略");
+      const ctripUrl =
+        "https://www.ctrip.com/?keyword=" + encodeQuery(destination);
+
+      xhsLink.href = xhsUrl;
+      ctripLink.href = ctripUrl;
+
+      showDestinationOnMap(destination);
+    }
+
+    function geocodeToLngLat(keyword) {
+      return new Promise((resolve, reject) => {
+        if (!placeSearch) {
+          reject("placeSearch not ready");
+          return;
+        }
+
+        placeSearch.search(keyword, function (status, result) {
+          if (status !== "complete" || !result.poiList || !result.poiList.pois.length) {
+            reject("未找到位置：" + keyword);
+            return;
+          }
+          const poi = result.poiList.pois[0];
+          resolve(poi.location);
+        });
+      });
+    }
+
+    function planBusRoute(originText, destText) {
+      if (!transfer) return;
+
+      let originPromise;
+      if (originLngLat) {
+        originPromise = Promise.resolve(originLngLat);
+      } else if (!originText && currentLngLat) {
+        originPromise = Promise.resolve(currentLngLat);
+      } else {
+        originPromise = geocodeToLngLat(originText);
+      }
+
+      Promise.all([
+        originPromise,
+        geocodeToLngLat(destText)
+      ]).then(([originPos, destPos]) => {
+        transfer.search(
+          originPos,
+          destPos,
+          function (status, result) {
+            console.log("transfer status:", status, result);
+            if (status !== "complete") {
+              alert("公交路线查询失败：" + (result && result.info ? result.info : "未知原因"));
+            }
+          }
+        );
+      }).catch(err => {
+        console.warn("bus geocode error:", err);
+        if (!originText && !currentLngLat) {
+          alert("无法获取出发地，请允许浏览器定位或手动输入并从下拉列表中选择具体地点。");
+        } else {
+          alert(typeof err === "string"
+            ? err
+            : "公交查询失败，地址解析不出来，请写详细一点。");
+        }
+      });
+    }
+
+    busBtn.addEventListener("click", () => {
+      const origin = routeOriginInput.value.trim();
+      if (!origin && !currentLngLat) {
+        alert("请填写出发地，或允许浏览器定位以使用当前位置。");
+        return;
+      }
+      if (!lastDestination) {
+        alert("请先通过左侧转盘抽取一个目的地。");
+        return;
+      }
+      const destText = lastDestination + " 四川";
+      planBusRoute(origin, destText);
+    });
+
+    function spin() {
+      if (spinning) return;
+      spinning = true;
+      spinBtn.disabled = true;
+      resultDiv.textContent = "";
+
+      const n = cities.length;
+      const step = 360 / n;
+
+      const targetIndex = Math.floor(Math.random() * n);
+
+      const minAngle = targetIndex * step;
+      const maxAngle = (targetIndex + 1) * step;
+      const targetCenter = (minAngle + maxAngle) / 2;
+
+      const extraTurns = 5 + Math.floor(Math.random() * 3);
+      const targetRotation = -(extraTurns * 360 + targetCenter);
+      const finalRotation = currentRotation + (targetRotation - currentRotation);
+
+      wheelInner.style.transition =
+        "transform 4s cubic-bezier(0.22, 0.12, 0.05, 1)";
+      wheelInner.style.transform = `rotate(${finalRotation}deg)`;
+
+      centerText.style.transition = "transform 0.2s ease-out";
+      centerText.style.transform = "translate(-50%, -50%) scale(0.96)";
+
+      setTimeout(() => {
+        currentRotation = finalRotation % 360;
+
+        const selectedCity = cities[targetIndex];
+        centerText.innerHTML =
+          "<span>这次就去</span><strong>" + selectedCity + "</strong>";
+        resultDiv.textContent = "本次目的地：" + selectedCity;
+
+        updateGuideLinks(selectedCity);
+
+        centerText.style.transform = "translate(-50%, -50%) scale(1.06)";
+        setTimeout(() => {
+          centerText.style.transform = "translate(-50%, -50%) scale(1)";
+        }, 160);
+
+        wheelInner.style.transition = "none";
+        spinning = false;
+        spinBtn.disabled = false;
+      }, 4100);
+    }
+
+    spinBtn.addEventListener("click", spin);
+    centerText.addEventListener("click", spin);
+
+    window.addEventListener("load", initMap);
+  </script>
+</body>
+</html>
